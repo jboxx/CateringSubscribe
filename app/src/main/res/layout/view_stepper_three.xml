@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingTop="@dimen/margin_4dp"
+    android:background="@android:color/white">
+
+    <io.github.jboxx.catering_subscribe.customviews.CircleView
+        android:id="@+id/rvTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:circleGap="0dp"
+        app:circleRadius="18dp"
+        app:fillColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/grey_300"
+        app:strokeWidth="8dp" />
+
+    <io.github.jboxx.catering_subscribe.customviews.CircleView
+        android:id="@+id/rvOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:circleGap="0dp"
+        app:circleRadius="18dp"
+        app:fillColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/rvTwo"
+        app:layout_constraintHorizontal_bias="0.3"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:strokeColor="@color/colorAccent"
+        app:strokeWidth="8dp" />
+
+    <io.github.jboxx.catering_subscribe.customviews.CircleView
+        android:id="@+id/rvThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:circleGap="0dp"
+        app:circleRadius="18dp"
+        app:fillColor="@android:color/white"
+        app:layout_constraintHorizontal_bias="0.7"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/rvTwo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:strokeColor="@color/grey_300"
+        app:strokeWidth="8dp" />
+
+    <View
+        android:id="@+id/lineDivider1"
+        app:layout_constraintLeft_toRightOf="@+id/rvOne"
+        app:layout_constraintRight_toLeftOf="@+id/rvTwo"
+        app:layout_constraintTop_toTopOf="@+id/rvTwo"
+        app:layout_constraintBottom_toBottomOf="@+id/rvTwo"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/list_divider" />
+
+    <View
+        android:id="@+id/lineDivider2"
+        app:layout_constraintLeft_toRightOf="@+id/rvTwo"
+        app:layout_constraintRight_toLeftOf="@+id/rvThree"
+        app:layout_constraintTop_toTopOf="@+id/rvTwo"
+        app:layout_constraintBottom_toBottomOf="@+id/rvTwo"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="@color/list_divider" />
+
+    <TextView
+        android:id="@+id/txtStep1Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Mulai"
+        android:text="@string/start"
+        android:textColor="@color/default_text_color"
+        android:textSize="12sp"
+        android:layout_marginBottom="@dimen/margin_4dp"
+        app:layout_constraintEnd_toStartOf="@+id/rvOne"
+        app:layout_constraintStart_toEndOf="@+id/rvOne"
+        app:layout_constraintBottom_toTopOf="@+id/rvOne" />
+
+    <TextView
+        android:id="@+id/txtStep2Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Pengiriman"
+        android:text="@string/delivery"
+        android:textColor="@color/grey_300"
+        android:textSize="12sp"
+        android:layout_marginBottom="@dimen/margin_4dp"
+        app:layout_constraintEnd_toStartOf="@+id/rvTwo"
+        app:layout_constraintStart_toEndOf="@+id/rvTwo"
+        app:layout_constraintBottom_toTopOf="@+id/rvTwo" />
+
+    <TextView
+        android:id="@+id/txtStep3Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Pembayaran"
+        android:text="@string/payment"
+        android:textColor="@color/grey_300"
+        android:textSize="12sp"
+        android:layout_marginBottom="@dimen/margin_4dp"
+        app:layout_constraintEnd_toStartOf="@+id/rvThree"
+        app:layout_constraintStart_toEndOf="@+id/rvThree"
+        app:layout_constraintBottom_toTopOf="@+id/rvThree" />
+
+</android.support.constraint.ConstraintLayout>

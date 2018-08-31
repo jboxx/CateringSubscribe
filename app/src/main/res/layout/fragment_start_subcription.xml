@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/blue_grey_50"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.ConstraintLayout
+        android:padding="@dimen/margin_16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvSubcriptionForm"
+            tools:style="@style/CardView"
+            app:cardCornerRadius="2dp"
+            app:cardElevation="@dimen/elevation_card_view"
+            app:cardBackgroundColor="@android:color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:padding="@dimen/margin_16dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/containerAmountBox"
+                    android:paddingTop="@dimen/margin_4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/lblAmountBoxPerDay"
+                        android:text="@string/amount_box_per_day"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_18sp"
+                        android:textColor="@color/grey_800"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <io.github.jboxx.catering_subscribe.customviews.CounterView
+                        android:id="@+id/counterView"
+                        app:layout_constraintTop_toBottomOf="@+id/lblAmountBoxPerDay"
+                        app:prefix="Box"
+                        android:layout_marginTop="@dimen/margin_8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </android.support.constraint.ConstraintLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/containerSubcriptionTime"
+                    android:paddingTop="@dimen/margin_24dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/lblSubcriptionTime"
+                        android:text="@string/subcription_time"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/text_18sp"
+                        android:textColor="@color/grey_800"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <android.support.v7.widget.GridLayout
+                        android:id="@+id/containerRadioSubcriptionTime"
+                        app:layout_constraintTop_toBottomOf="@+id/lblSubcriptionTime"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:alignmentMode="alignBounds"
+                        app:columnCount="2"
+                        app:rowOrderPreserved="false"
+                        app:useDefaultMargins="true"
+                        android:layout_marginTop="@dimen/margin_8dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                        android:id="@+id/calendarView"
+                        app:layout_constraintTop_toBottomOf="@+id/containerRadioSubcriptionTime"
+                        android:layout_marginTop="@dimen/margin_16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:mcv_leftArrowMask="@drawable/ic_chevron_left"
+                        app:mcv_rightArrowMask="@drawable/ic_chevron_right"
+                        app:mcv_weekDayLabels="@array/custom_weekdays"
+                        app:mcv_monthLabels="@array/custom_months"
+                        app:mcv_selectionMode="multiple"
+                        app:mcv_showOtherDates="all"
+                        app:mcv_selectionColor="@color/colorAccent"
+                        app:mcv_firstDayOfWeek="monday"
+                        app:mcv_calendarMode="month"
+                        app:mcv_titleAnimationOrientation="horizontal"/>
+
+                    <LinearLayout
+                        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+                        android:background="@color/orange_50"
+                        android:padding="@dimen/margin_14dp"
+                        android:layout_marginTop="@dimen/margin_16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:textSize="@dimen/text_14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/default_text_color"
+                            android:text="@string/pro_tips"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:lineSpacingMultiplier="1.2"
+                            android:text="@string/pro_tips_start_subcription"
+                            android:textColor="@color/default_text_color"
+                            android:textSize="@dimen/text_10sp"
+                            android:layout_marginTop="@dimen/margin_2dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvDetails"
+            tools:style="@style/CardView"
+            app:layout_constraintTop_toBottomOf="@+id/cvSubcriptionForm"
+            app:cardCornerRadius="2dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="@dimen/elevation_card_view"
+            android:layout_marginTop="@dimen/margin_16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/containerSubcriptionDetail"
+                android:padding="@dimen/margin_16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/lblSubcriptionDetail"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:layout_marginTop="@dimen/margin_4dp"
+                    android:text="@string/subcription_detail"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_18sp"
+                    android:textColor="@color/grey_800"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/lblPricePerBox"
+                    app:layout_constraintTop_toBottomOf="@+id/lblSubcriptionDetail"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="@dimen/margin_24dp"
+                    android:text="@string/price_per_box"
+                    android:textSize="@dimen/text_14sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/valuePricePerDay"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/lblPricePerBox"
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:text="Rp 25.000"
+                    android:textSize="@dimen/text_14sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:id="@+id/dividerPricePerBox"
+                    app:layout_constraintTop_toBottomOf="@+id/lblPricePerBox"
+                    android:background="@color/list_divider"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+                <TextView
+                    android:id="@+id/lblAmountBox"
+                    app:layout_constraintTop_toBottomOf="@+id/dividerPricePerBox"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:text="@string/amount_box"
+                    android:textSize="@dimen/text_14sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/valueAmountBox"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/lblAmountBox"
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:text="1 Box"
+                    android:textSize="@dimen/text_14sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:id="@+id/dividerAmountBox"
+                    app:layout_constraintTop_toBottomOf="@+id/lblAmountBox"
+                    android:background="@color/list_divider"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+                <TextView
+                    android:id="@+id/lblSubcriptionDays"
+                    app:layout_constraintTop_toBottomOf="@+id/dividerAmountBox"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:text="@string/subcription_time"
+                    android:textSize="@dimen/text_14sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/valueSubcriptionDays"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/lblSubcriptionDays"
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:text="10 Hari"
+                    android:textSize="@dimen/text_14sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/valueStartSubcriptionDate"
+                    app:layout_constraintTop_toBottomOf="@+id/lblSubcriptionDays"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    tools:text="Mulai Jumat, 13 April 2018"
+                    android:textSize="@dimen/text_10sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <View
+                    android:id="@+id/dividerStartSubcriptionDate"
+                    app:layout_constraintTop_toBottomOf="@+id/valueStartSubcriptionDate"
+                    android:background="@color/list_divider"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+                <TextView
+                    android:id="@+id/lblTotal"
+                    app:layout_constraintTop_toBottomOf="@+id/dividerStartSubcriptionDate"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    android:layout_marginTop="@dimen/margin_8dp"
+                    android:layout_marginBottom="@dimen/margin_8dp"
+                    android:text="@string/total"
+                    android:textSize="@dimen/text_14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/valueTotal"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/lblTotal"
+                    app:layout_constraintRight_toRightOf="parent"
+                    tools:text="Rp 250.000"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_14sp"
+                    android:textColor="@color/default_text_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v4.widget.NestedScrollView>
