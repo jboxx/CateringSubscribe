@@ -2,7 +2,8 @@ package io.github.jboxx.catering_subscribe.subcripstions;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
-import java.util.Calendar;
+import org.threeten.bp.LocalDate;
+
 import java.util.List;
 
 import io.github.jboxx.catering_subscribe.pojo.SubcriptionTime;
@@ -21,9 +22,14 @@ public interface SubcriptionsContract {
 
         void clearSelectionCalendar();
 
-        void setSubcriptionTime(List<SubcriptionTime> subcriptionTimeList);
+        void setRadioCustomSubcriptionTime(int index, String daySubcriptionDisplay,
+                                           String descSubcriptionDisplay);
+        void setRadioCustomSubcriptionTime(int index, int daySubcription,
+                                           String descSubcriptionDisplay);
+        void setCheckRadioSubcriptionTime(int index);
+        void setSubcriptionTime(List<SubcriptionTime> subcriptionTimeList, int defaultIndex);
         void setSelectionDate(CalendarDay calendarDay);
-        void setDisabilibiltyCalendar(boolean isDisable);
+        void setDisabilibiltyCalendar(List<CalendarDay> calendarDayList);
         void setValuePricePerDay(String value);
         void setValueAmountBox(int newCount);
         void setValueStartSubcriptionDate(String value);
@@ -34,6 +40,8 @@ public interface SubcriptionsContract {
         void snackbarErrorShouldSelectMoreDates(int i);
 
         void showTomorrowMonth(CalendarDay calendarDay);
+
+        List<CalendarDay> getSelectedCalendar();
     }
 
     interface Presenter {
@@ -41,7 +49,7 @@ public interface SubcriptionsContract {
         void setView(SubcriptionsContract.View view);
         void onBegin();
         void onChangeCounter(int newCount);
-        void onClickSubcriptionTime(SubcriptionTime subcriptionTime);
+        void onChangeSubcriptionTime(int index, boolean isSetManually);
         void onClickNextButton();
 
         boolean saveDate(CalendarDay calendarDay, boolean isChecked);
@@ -50,6 +58,6 @@ public interface SubcriptionsContract {
         void onMoveFoward();
         void onMoveBackward();
 
-        Calendar getFirstSelectedDate();
+        LocalDate getFirstSelectedDate();
     }
 }

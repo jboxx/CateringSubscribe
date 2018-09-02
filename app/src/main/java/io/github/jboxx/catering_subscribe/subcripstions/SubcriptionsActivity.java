@@ -29,7 +29,8 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
-import java.util.Calendar;
+import org.threeten.bp.LocalDate;
+
 import java.util.List;
 
 import javax.inject.Inject;
@@ -156,22 +157,21 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
                 selectionSquareDecorator,
                 disableSaturdayAndMonday
         );
-        Calendar minimumCalendar = Calendar.getInstance();
-        minimumCalendar.set(minimumCalendar.get(Calendar.YEAR),
-                minimumCalendar.get(Calendar.MONTH),
-                minimumCalendar.get(Calendar.DATE) + 1);
-        Calendar maxmimumCalendar = Calendar.getInstance();
-        maxmimumCalendar.set(maxmimumCalendar.get(Calendar.YEAR), Calendar.DECEMBER, 31);
+
+        LocalDate minDate = LocalDate.now().withDayOfMonth(1);
+        LocalDate maxDate = LocalDate.now().plusMonths(6);
+
         calendarView.state().edit()
-                .setMinimumDate(minimumCalendar)
-                .setMaximumDate(maxmimumCalendar)
+                .setMinimumDate(minDate)
+                .setMaximumDate(maxDate)
                 .commit();
     }
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView materialCalendarView, @NonNull CalendarDay calendarDay, boolean b) {
-        subcriptionsPresenter.saveDate(calendarDay, b);
         calendarView.invalidateDecorators();
+        subcriptionsPresenter.saveDate(calendarDay, b);
+
     }
 
     @Override
@@ -181,8 +181,8 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
     }
 
     @Override
-    public void setDisabilibiltyCalendar(boolean isDisable) {
-        disableSaturdayAndMonday.addDatesNotDisable(isDisable, calendarView.getSelectedDates());
+    public void setDisabilibiltyCalendar(List<CalendarDay> calendarDayList) {
+        disableSaturdayAndMonday.addDatesNotDisable(calendarDayList);
         calendarView.invalidateDecorators();
     }
 
@@ -238,7 +238,7 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
     }
 
     @Override
-    public void setSubcriptionTime(List<SubcriptionTime> subcriptionTimeList) {
+    public void setSubcriptionTime(List<SubcriptionTime> subcriptionTimeList, int defaultIndex) {
         if (subcriptionTimeList.size() > 0) {
             containerRadioSubcriptionTime.removeAllViews();
 
@@ -249,12 +249,12 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
                 RadioButton lblRadioButton = view.findViewById(R.id.lblRadioButton);
                 TextView descRadioButton = view.findViewById(R.id.descRadioButton);
 
-                lblRadioButton.setTag(subcriptionTimeList.get(x));
+                lblRadioButton.setTag(x);
                 lblRadioButton.setText(subcriptionTimeList.get(x).getDaySubcriptionDisplay());
                 descRadioButton.setText(subcriptionTimeList.get(x).getDescSubcriptionDisplay());
 
                 view.setId(uiUtils.generateViewId());
-                view.setTag(subcriptionTimeList.get(x));
+                view.setTag(x);
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
                         GridLayout.UNDEFINED,GridLayout.FILL,1f),
                         GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f));
@@ -262,11 +262,11 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
             }
 
             customRadioGroup.setView(containerRadioSubcriptionTime);
-            customRadioGroup.setOnButtonCheckedListener(button -> {
-                subcriptionsPresenter.onClickSubcriptionTime((SubcriptionTime) button.getTag());
+            customRadioGroup.setOnButtonCheckedListener((button, isSetManually) -> {
+                subcriptionsPresenter.onChangeSubcriptionTime((int) button.getTag(), isSetManually);
                 highlightSelectedSubcriptionTime(button);
             });
-            customRadioGroup.setChecked(0);
+            customRadioGroup.setChecked(defaultIndex, false);
         }
     }
 
@@ -303,6 +303,33 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
     @OnClick(R.id.btnNext)
     void onClickNextButton() {
         subcriptionsPresenter.onClickNextButton();
+    }
+
+    @Override
+    public void setCheckRadioSubcriptionTime(int index) {
+        customRadioGroup.setChecked(index, true);
+    }
+
+    @Override
+    public void setRadioCustomSubcriptionTime(int index, String daySubcriptionDisplay,
+                                             String descSubcriptionDisplay) {
+        TextView lblRadioButton =
+                containerRadioSubcriptionTime.getChildAt(index).findViewById(R.id.lblRadioButton);
+        lblRadioButton.setText(daySubcriptionDisplay);
+        TextView descRadioButton =
+                containerRadioSubcriptionTime.getChildAt(index).findViewById(R.id.descRadioButton);
+        descRadioButton.setText(descSubcriptionDisplay);
+    }
+
+    @Override
+    public void setRadioCustomSubcriptionTime(int index, int daySubcription,
+                                              String descSubcriptionDisplay) {
+        setRadioCustomSubcriptionTime(index, getString(R.string.tag_days, String.valueOf(daySubcription)), descSubcriptionDisplay);
+    }
+
+    @Override
+    public List<CalendarDay> getSelectedCalendar() {
+        return calendarView.getSelectedDates();
     }
 
     private void highlightSelectedSubcriptionTime(CompoundButton button) {

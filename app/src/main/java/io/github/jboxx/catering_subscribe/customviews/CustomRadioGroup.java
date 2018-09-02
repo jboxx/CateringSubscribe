@@ -1,6 +1,5 @@
 package io.github.jboxx.catering_subscribe.customviews;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -12,12 +11,12 @@ import java.util.List;
 public class CustomRadioGroup {
 
     public interface OnButtonCheckedListener {
-        void onButtonChecked(CompoundButton button);
+        void onButtonChecked(CompoundButton button, boolean isSetManually);
     }
 
     private final List<CompoundButton> buttons;
     private final View.OnClickListener onClick = v -> {
-        setChecked(findCompoundButton(v));
+        setChecked(findCompoundButton(v), false);
     };
 
     private OnButtonCheckedListener listener;
@@ -64,9 +63,9 @@ public class CustomRadioGroup {
 
     public CompoundButton getLastChecked() { return lastChecked; }
 
-    public void setChecked(int index) { setChecked(buttons.get(index)); }
+    public void setChecked(int index, boolean isSetManual) { setChecked(buttons.get(index), isSetManual); }
 
-    public void setChecked(CompoundButton button) {
+    public void setChecked(CompoundButton button, boolean isSetManually) {
         if(button == lastChecked) return;
 
         for (CompoundButton btn : buttons) {
@@ -78,7 +77,7 @@ public class CustomRadioGroup {
         lastChecked = button;
 
         if(listener != null) {
-            listener.onButtonChecked(button);
+            listener.onButtonChecked(button, isSetManually);
         }
     }
 

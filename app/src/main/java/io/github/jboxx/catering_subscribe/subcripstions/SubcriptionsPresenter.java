@@ -1,16 +1,17 @@
 package io.github.jboxx.catering_subscribe.subcripstions;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
+
+import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -26,22 +27,17 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
 
     private SubcriptionsContract.View view;
 
-    private Date today;
     private Locale locale;
     private SimpleDateFormat simpleDateFormat;
-    private List<CalendarDay> savedDates;
     private List<SubcriptionTime> subcriptionTimeList;
-    private double pricePerDay;
+    private SubcriptionTime subcriptionTime;
+    private SubcriptionTime customSubcriptionTime;
     private int newCount;
     private int numberOfDays;
-    private boolean isCanAddMoreDays;
-    private int shouldSelectDates;
 
     public SubcriptionsPresenter() {
         this.locale = new Locale("id");
         this.simpleDateFormat = new SimpleDateFormat("EEEE, dd MMMM yyyy", locale);
-        this.today = new Date();
-        this.savedDates = new ArrayList<>();
         this.subcriptionTimeList= new ArrayList<>();
     }
 
@@ -56,35 +52,41 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
         SubcriptionTime subcriptionTime1
                 = new SubcriptionTime("20_DAYS",
                 "20 Hari", "Rp 22.500/hari", 20,
-                "UNDEFINED",22500, false);
+                "UNDEFINED",22500);
         subcriptionTimeList.add(subcriptionTime1);
 
         SubcriptionTime subcriptionTime2
                 = new SubcriptionTime("10_DAYS",
                 "10 Hari", "Rp 24.250/hari", 10,
-                "19", 24250,false);
+                "19", 24250);
         subcriptionTimeList.add(subcriptionTime2);
 
         SubcriptionTime subcriptionTime3
                 = new SubcriptionTime("5_DAYS",
                 "5 Hari", "Rp 25.000/hari", 5,
-                "9", 25000,false);
+                "9", 25000);
         subcriptionTimeList.add(subcriptionTime3);
 
         SubcriptionTime subcriptionTime4
                 = new SubcriptionTime("CUSTOM",
-                "Pilih Sendiri", "Min. 2 hari", 2,
-                "4", 25000, true);
+                "Pilih Sendiri", "Rp 25.000/hari", 2,
+                "4", 25000);
         subcriptionTimeList.add(subcriptionTime4);
 
-        newCount = 1;
-        pricePerDay = subcriptionTime1.getPricePerDay();
-        numberOfDays = subcriptionTime1.getNumberOfDays();
-        isCanAddMoreDays = subcriptionTime1.isAddMoreDays();
-        shouldSelectDates = subcriptionTime1.getNumberOfDays();
+        for (int i = 0; i < subcriptionTimeList.size(); i++) {
+            subcriptionTimeList.get(i).setPid(i);
+            if (subcriptionTimeList.get(i).getParam().equals(SubcriptionTime.CUSTOM)) {
+                this.customSubcriptionTime = new SubcriptionTime(subcriptionTimeList.get(i));
+                this.customSubcriptionTime.setPid(i);
+                this.customSubcriptionTime.setDescSubcriptionDisplay(
+                        "Min. " + subcriptionTimeList.get(i).getShouldSelectedDays() + " Hari");
+            }
+        }
+
+        this.newCount = 1;
 
         view.initViews();
-        view.setSubcriptionTime(subcriptionTimeList);
+        view.setSubcriptionTime(subcriptionTimeList, 0);
         view.setValueAmountBox(newCount);
         computeTotalPrice();
     }
@@ -104,39 +106,31 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
     }
 
     @Override
-    public void onClickSubcriptionTime(SubcriptionTime subcriptionTime) {
-        this.isCanAddMoreDays = subcriptionTime.isAddMoreDays();
-        this.numberOfDays = subcriptionTime.getNumberOfDays();
-        this.shouldSelectDates = subcriptionTime.getNumberOfDays();
-        this.pricePerDay = subcriptionTime.getPricePerDay();
+    public void onChangeSubcriptionTime(int index, boolean isSetManually) {
+        setSubcriptionTime(subcriptionTimeList.get(index), isSetManually);
+    }
 
-        view.clearSelectionCalendar();
-        savedDates.clear();
+    private void setSubcriptionTime(SubcriptionTime subcriptionTime, boolean isSetManually) {
+        this.subcriptionTime = subcriptionTime;
+        if (!isSetManually) {
+            this.numberOfDays = subcriptionTime.getShouldSelectedDays();
 
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.setTime(today);
-        tomorrow.add(Calendar.DATE, 1);
+            view.clearSelectionCalendar();
 
-        view.showTomorrowMonth(CalendarDay.from(tomorrow));
+            LocalDate tomorrow = LocalDate.now().plusDays(1);
 
-        for (int i = 0; i < shouldSelectDates;) {
-            final CalendarDay current = CalendarDay.from(tomorrow);
-            int dayOfWeek = current.getCalendar().get(Calendar.DAY_OF_WEEK);
-            if (dayOfWeek != Calendar.SUNDAY && dayOfWeek != Calendar.SATURDAY) {
-                view.setSelectionDate(current);
-                savedDates.add(current);
-                i++;
+            view.showTomorrowMonth(CalendarDay.from(tomorrow));
+            selectDateWithoutHoliday(numberOfDays, tomorrow);
+
+            if (!subcriptionTime.getParam().equals(SubcriptionTime.CUSTOM)) {
+                view.setRadioCustomSubcriptionTime(customSubcriptionTime.getPid(),
+                        customSubcriptionTime.getDaySubcriptionDisplay(), customSubcriptionTime.getDescSubcriptionDisplay());
+            } else {
+                view.setRadioCustomSubcriptionTime(customSubcriptionTime.getPid(),
+                        numberOfDays, subcriptionTime.getDescSubcriptionDisplay());
             }
-            tomorrow.add(Calendar.DATE, 1);
         }
-
-        if (!isCanAddMoreDays && shouldSelectDates == numberOfDays) {
-            view.setDisabilibiltyCalendar(true);
-        } else {
-            view.setDisabilibiltyCalendar(false);
-        }
-
-        view.setValuePricePerDay(pricePrefix(pricePerDay));
+        view.setValuePricePerDay(pricePrefix(subcriptionTime.getPricePerDay()));
         view.setValueSubcriptionDays(numberOfDays);
         setFirstSelectedDate();
         computeTotalPrice();
@@ -145,65 +139,25 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
     @Override
     public boolean saveDate(CalendarDay calendarDay, boolean isChecked) {
         if (isChecked) {
-            savedDates.add(calendarDay);
-            Collections.sort(savedDates, (o1, o2) -> {
-                Calendar left = o1.getCalendar();
-                Calendar right = o2.getCalendar();
-                return left.compareTo(right);
-            });
-            setFirstSelectedDate();
             this.numberOfDays++;
-            if (!isCanAddMoreDays && shouldSelectDates == numberOfDays) {
-                view.setDisabilibiltyCalendar(true);
-            }
         } else {
-            savedDates.remove(calendarDay);
-            checkIfNotSelectionAnything();
             this.numberOfDays--;
-            view.setDisabilibiltyCalendar(false);
+            selectDay(calendarDay);
         }
-        checkProperPricePerDayByNumberOfDaysThatPicked();
+        checkIfNumberSelectedDaysOnList();
+
+        checkIfNotSelectionAnything();
         view.setValueSubcriptionDays(numberOfDays);
         computeTotalPrice();
         return true;
     }
 
-    private boolean checkProperPricePerDayByNumberOfDaysThatPicked() {
-        if (isCanAddMoreDays) {
-            double pricePerDayForMaxPickedDay = 0d;
-            for (SubcriptionTime subcriptionTime : subcriptionTimeList) {
-                if (!subcriptionTime.getMaxNumberOfDays().equals(SubcriptionTime.UNDEFINED)) {
-                    if (subcriptionTime.getNumberOfDays() <= numberOfDays
-                            && Integer.parseInt(subcriptionTime.getMaxNumberOfDays()) >= numberOfDays) {
-                        this.pricePerDay = subcriptionTime.getPricePerDay();
-                        view.setValuePricePerDay(pricePrefix(pricePerDay));
-                        return true;
-                    }
-                } else {
-                    pricePerDayForMaxPickedDay = subcriptionTime.getPricePerDay();
-                }
-            }
-            this.pricePerDay = pricePerDayForMaxPickedDay;
-            view.setValuePricePerDay(pricePrefix(pricePerDay));
-            return true;
-        }
-        return false;
-    }
-
-    private void checkIfNotSelectionAnything() {
-        if (savedDates!= null && savedDates.size() == 0) {
-            view.setValueStartSubcriptionDateVisibility(false);
-        } else {
-            setFirstSelectedDate();
-        }
-    }
-
     @Override
     public void setFirstSelectedDate() {
         if (getFirstSelectedDate() != null) {
-            Date date = getFirstSelectedDate().getTime();
             String firstSelectedDate;
             try {
+                Date date = java.sql.Date.valueOf(getFirstSelectedDate().toString());
                 firstSelectedDate = simpleDateFormat.format(date);
                 view.setValueStartSubcriptionDate(firstSelectedDate);
                 view.setValueStartSubcriptionDateVisibility(true);
@@ -216,9 +170,9 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
 
     @Nullable
     @Override
-    public Calendar getFirstSelectedDate() {
-        if (savedDates != null && savedDates.size() > 0) {
-            return savedDates.get(0).getCalendar();
+    public LocalDate getFirstSelectedDate() {
+        if (view.getSelectedCalendar() != null && view.getSelectedCalendar().size() > 0) {
+            return sortedCalendarList().get(0);
         }
         return null;
     }
@@ -233,10 +187,8 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
             case SubcriptionsContract.STEP_DELIVERY_SUBCRIPTION:
                 currentStep = SubcriptionsContract.STEP_PAYMENT_SUBCRIPTION;
                 view.showStep(SubcriptionsContract.STEP_PAYMENT_SUBCRIPTION, true);
-
                 break;
             case SubcriptionsContract.STEP_PAYMENT_SUBCRIPTION:
-
                 break;
         }
     }
@@ -271,15 +223,133 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
     }
 
     private boolean validateStartSubcription() {
-        if (numberOfDays < shouldSelectDates) {
-            view.snackbarErrorShouldSelectMoreDates(shouldSelectDates - numberOfDays);
+        if (subcriptionTime.getParam().equals(SubcriptionTime.CUSTOM)
+                && numberOfDays < subcriptionTime.getShouldSelectedDays()) {
+            view.snackbarErrorShouldSelectMoreDates(subcriptionTime.getShouldSelectedDays() - numberOfDays);
             return false;
         }
         return true;
     }
 
+    private boolean checkIfNumberSelectedDaysOnList() {
+        if (!subcriptionTime.getParam().equals(SubcriptionTime.CUSTOM)) {
+            // Dari bukan custom radio button
+            int size = subcriptionTimeList.size();
+            for (int i = 0; i < size; i++) {
+                if (subcriptionTimeList.get(i).getShouldSelectedDays() == numberOfDays) {
+                    // Harus pindah ke custom radio button
+                    setProperPricePerDayByNumberOfDaysThatPicked();
+                    view.setCheckRadioSubcriptionTime(i);
+                    return true;
+                }
+            }
+        } else {
+            // Dari custom radio button
+            int size = subcriptionTimeList.size();
+            for (int i = 0; i < size; i++) {
+                if (subcriptionTimeList.get(i).getShouldSelectedDays() == numberOfDays) {
+                    // Harus pindah ke proper radio button
+                    if (subcriptionTimeList.get(i).getParam().equals(SubcriptionTime.CUSTOM)) {
+                        view.setRadioCustomSubcriptionTime(customSubcriptionTime.getPid(),
+                                numberOfDays, subcriptionTime.getDescSubcriptionDisplay());
+                    } else {
+                        view.setRadioCustomSubcriptionTime(customSubcriptionTime.getPid(),
+                                customSubcriptionTime.getDaySubcriptionDisplay(), customSubcriptionTime.getDescSubcriptionDisplay());
+                    }
+                    view.setCheckRadioSubcriptionTime(i);
+                    return true;
+                }
+            }
+        }
+        setToCustomSubcriptionTime();
+        return false;
+    }
+
+    private void setToCustomSubcriptionTime() {
+        view.setCheckRadioSubcriptionTime(customSubcriptionTime.getPid());
+        setProperPricePerDayByNumberOfDaysThatPicked();
+    }
+
+    private void selectDateWithoutHoliday(int numberOfDays, LocalDate tomorrow) {
+        for (int i = 0; i < numberOfDays;) {
+            final CalendarDay current = CalendarDay.from(tomorrow);
+            DayOfWeek dayOfWeek = current.getDate().getDayOfWeek();
+            if (dayOfWeek != DayOfWeek.SUNDAY && dayOfWeek != DayOfWeek.SATURDAY) {
+                view.setSelectionDate(current);
+                i++;
+            }
+            tomorrow = tomorrow.plusDays(1);
+        }
+    }
+
+    private void selectDay(CalendarDay deletedCalendar) {
+        if (!subcriptionTime.getParam().equals(SubcriptionTime.CUSTOM)
+                || numberOfDays <= customSubcriptionTime.getShouldSelectedDays()) {
+
+            LocalDate localDate = sortedCalendarList().get(sortedCalendarList().size()-1);
+
+            LocalDate selectDate = deletedCalendar.getDate().isAfter(localDate)
+                    ? deletedCalendar.getDate().plusDays(1) : localDate.plusDays(1);
+
+            selectDateWithoutHoliday(1, selectDate);
+
+            numberOfDays++;
+
+            view.setValuePricePerDay(pricePrefix(subcriptionTime.getPricePerDay()));
+            view.setValueSubcriptionDays(numberOfDays);
+            setFirstSelectedDate();
+            computeTotalPrice();
+        }
+    }
+
+    private void setProperPricePerDayByNumberOfDaysThatPicked() {
+        if (subcriptionTime.getParam().equals(SubcriptionTime.CUSTOM)) {
+            double pricePerDayForMaxPickedDay = customSubcriptionTime.getPricePerDay();
+            String descSubcriptionDisplay = subcriptionTime.getDescSubcriptionDisplay();
+            for (SubcriptionTime subcriptionTime : subcriptionTimeList) {
+                if (!subcriptionTime.getMaxNumberOfDays().equals(SubcriptionTime.UNDEFINED)) {
+                    if (subcriptionTime.getShouldSelectedDays() <= numberOfDays
+                            && Integer.parseInt(subcriptionTime.getMaxNumberOfDays()) >= numberOfDays) {
+                        view.setRadioCustomSubcriptionTime(customSubcriptionTime.getPid(),
+                                numberOfDays, subcriptionTime.getDescSubcriptionDisplay());
+                        this.subcriptionTime.setPricePerDay(subcriptionTime.getPricePerDay());
+                        view.setValuePricePerDay(pricePrefix(this.subcriptionTime.getPricePerDay()));
+                        return;
+                    }
+                } else {
+                    pricePerDayForMaxPickedDay = subcriptionTime.getPricePerDay();
+                    descSubcriptionDisplay = subcriptionTime.getDescSubcriptionDisplay();
+                }
+            }
+            this.subcriptionTime.setPricePerDay(pricePerDayForMaxPickedDay);
+            view.setRadioCustomSubcriptionTime(customSubcriptionTime.getPid(),
+                    numberOfDays, descSubcriptionDisplay);
+            view.setValuePricePerDay(pricePrefix(subcriptionTime.getPricePerDay()));
+            return;
+        }
+        return;
+    }
+
+    private void checkIfNotSelectionAnything() {
+        if (view.getSelectedCalendar()!= null && view.getSelectedCalendar().size() == 0) {
+            view.setValueStartSubcriptionDateVisibility(false);
+        } else {
+            setFirstSelectedDate();
+        }
+    }
+
+    private List<LocalDate> sortedCalendarList() {
+        List<CalendarDay> calendarDayList = new ArrayList<>(view.getSelectedCalendar());
+        List<LocalDate> sortedCalendar = new ArrayList<>();
+        for (CalendarDay calendarDay : calendarDayList) {
+            sortedCalendar.add(calendarDay.getDate());
+        }
+        Collections.sort(sortedCalendar);
+        return sortedCalendar;
+    }
+
     private void computeTotalPrice() {
-        view.setTotalPrice(pricePrefix((pricePerDay * newCount) * numberOfDays));
+        view.setTotalPrice(pricePrefix((subcriptionTime.getPricePerDay() * newCount) * numberOfDays));
     }
 
     private String pricePrefix(double price) {

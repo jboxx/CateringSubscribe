@@ -3,23 +3,51 @@ package io.github.jboxx.catering_subscribe.pojo;
 public class SubcriptionTime {
 
     public static final String UNDEFINED = "UNDEFINED";
+    public static final String CUSTOM = "CUSTOM";
 
+    private int pid;
     private String param;
     private String daySubcriptionDisplay;
     private String descSubcriptionDisplay;
-    private int numberOfDays;
+    private int shouldSelectedDays;
     private String maxNumberOfDays;
     private double pricePerDay;
-    private boolean addMoreDays = false;
 
-    public SubcriptionTime(String param, String daySubcriptionDisplay, String descSubcriptionDisplay, int numberOfDays, String maxNumberOfDays, double pricePerDay, boolean addMoreDays) {
+    public SubcriptionTime() {
+    }
+
+    public SubcriptionTime(SubcriptionTime subcriptionTime) {
+        this.param = subcriptionTime.getParam();
+        this.daySubcriptionDisplay = subcriptionTime.getDaySubcriptionDisplay();
+        this.descSubcriptionDisplay = subcriptionTime.getDescSubcriptionDisplay();
+        this.shouldSelectedDays = subcriptionTime.getShouldSelectedDays();
+        this.maxNumberOfDays = subcriptionTime.getMaxNumberOfDays();
+        this.pricePerDay = subcriptionTime.getPricePerDay();
+    }
+
+    public SubcriptionTime(String param, String daySubcriptionDisplay, String descSubcriptionDisplay, int shouldSelectedDays, String maxNumberOfDays, double pricePerDay) {
         this.param = param;
         this.daySubcriptionDisplay = daySubcriptionDisplay;
         this.descSubcriptionDisplay = descSubcriptionDisplay;
-        this.numberOfDays = numberOfDays;
+        this.shouldSelectedDays = shouldSelectedDays;
         this.maxNumberOfDays = maxNumberOfDays;
         this.pricePerDay = pricePerDay;
-        this.addMoreDays = addMoreDays;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+
+    public void setPricePerDay(double pricePerDay) {
+        this.pricePerDay = pricePerDay;
+    }
+
+    public void setDescSubcriptionDisplay(String descSubcriptionDisplay) {
+        this.descSubcriptionDisplay = descSubcriptionDisplay;
+    }
+
+    public int getPid() {
+        return pid;
     }
 
     public String getParam() {
@@ -34,8 +62,8 @@ public class SubcriptionTime {
         return descSubcriptionDisplay;
     }
 
-    public int getNumberOfDays() {
-        return numberOfDays;
+    public int getShouldSelectedDays() {
+        return shouldSelectedDays;
     }
 
     public String getMaxNumberOfDays() {
@@ -46,7 +74,4 @@ public class SubcriptionTime {
         return pricePerDay;
     }
 
-    public boolean isAddMoreDays() {
-        return addMoreDays;
-    }
 }
