@@ -25,6 +25,8 @@ public class CounterView extends LinearLayout {
     private String prefix = "";
 
     private TextView txtCounter;
+    private Button btnMinus;
+    private Button btnPlus;
     private boolean isPlusEnabled;
     private boolean isMinusEnabled;
     private OnCountChangedListener listener;
@@ -81,7 +83,7 @@ public class CounterView extends LinearLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
         addView(txtCounter);
 
-        Button btnMinus = new Button(context);
+        btnMinus = new Button(context);
         btnMinus.setText("-");
         btnMinus.setTextSize(18f);
         LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -91,7 +93,7 @@ public class CounterView extends LinearLayout {
                 0, context.getResources().getDimensionPixelSize(R.dimen.margin_2dp), 0);
         btnMinus.setLayoutParams(layoutParams);
         btnMinus.setTextColor(ContextCompat.getColor(context, android.R.color.white));
-        btnMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_counter_left));
+        btnMinus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_counter_left_state));
         btnMinus.setOnClickListener(v -> {
             if (isMinusEnabled){
                 --count;
@@ -104,14 +106,14 @@ public class CounterView extends LinearLayout {
         });
         addView(btnMinus);
 
-        Button btnPlus = new Button(context);
+        btnPlus = new Button(context);
         btnPlus.setText("+");
         btnPlus.setTextSize(18f);
         btnPlus.setLayoutParams(new LinearLayout.LayoutParams(
                 context.getResources().getDimensionPixelSize(R.dimen.btn_counter_width),
                 ViewGroup.LayoutParams.MATCH_PARENT));
         btnPlus.setTextColor(ContextCompat.getColor(context, android.R.color.white));
-        btnPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_counter_right));
+        btnPlus.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_counter_right_state));
         btnPlus.setOnClickListener(v -> {
             if(isPlusEnabled){
                 ++count;
@@ -141,6 +143,16 @@ public class CounterView extends LinearLayout {
         } else {
             isMinusEnabled = false;
         }
+        setDisabilityLeftCounterButton();
+        setDisabilityRightCounterButton();
+    }
+
+    private void setDisabilityLeftCounterButton() {
+        btnMinus.setEnabled(isMinusEnabled);
+    }
+
+    private void setDisabilityRightCounterButton() {
+        btnPlus.setEnabled(isPlusEnabled);
     }
 
     private void redrawCounter(int count) {

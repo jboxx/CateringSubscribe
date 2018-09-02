@@ -6,7 +6,6 @@ import com.prolificinteractive.materialcalendarview.DayViewFacade;
 
 import org.threeten.bp.DayOfWeek;
 
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 

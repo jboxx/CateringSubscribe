@@ -83,10 +83,14 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
     CircleView rvOne;
     @BindView(R.id.txtStep1Label)
     TextView txtStep1Label;
+    @BindView(R.id.lineDivider1)
+    View lineDivider1;
     @BindView(R.id.rvTwo)
     CircleView rvTwo;
     @BindView(R.id.txtStep2Label)
     TextView txtStep2Label;
+    @BindView(R.id.lineDivider2)
+    View lineDivider2;
     @BindView(R.id.rvThree)
     CircleView rvThree;
     @BindView(R.id.txtStep3Label)
@@ -220,19 +224,34 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
 
         switch (step){
             case SubcriptionsContract.STEP_START_SUBCRIPTION:
-                rvTwo.setCircleActive(false);
+                rvOne.setCircleStatus(CircleView.ACTIVE);
+                rvTwo.setCircleStatus(CircleView.UNACTIVE);
+                rvThree.setCircleStatus(CircleView.UNACTIVE);
+
+                lineDivider1.setBackgroundColor(ContextCompat.getColor(this, R.color.list_divider));
+                lineDivider2.setBackgroundColor(ContextCompat.getColor(this, R.color.list_divider));
                 txtStep2Label.setTextColor(ResourcesCompat.getColor(resources, R.color.grey_300, getTheme()));
                 break;
             case SubcriptionsContract.STEP_DELIVERY_SUBCRIPTION:
-                rvTwo.setCircleActive(true);
-                rvThree.setCircleActive(false);
+                rvOne.setCircleStatus(CircleView.FILLED);
+                rvTwo.setCircleStatus(CircleView.ACTIVE);
+                rvThree.setCircleStatus(CircleView.UNACTIVE);
+
+                lineDivider1.setBackgroundColor(ContextCompat.getColor(this, R.color.list_divider_active));
+                lineDivider2.setBackgroundColor(ContextCompat.getColor(this, R.color.list_divider));
+
                 txtStep2Label.setTextColor(ResourcesCompat.getColor(resources, R.color.default_text_color, getTheme()));
                 txtStep3Label.setTextColor(ResourcesCompat.getColor(resources, R.color.grey_300, getTheme()));
                 break;
             case SubcriptionsContract.STEP_PAYMENT_SUBCRIPTION:
-                rvThree.setCircleActive(true);
-                txtStep3Label.setTextColor(ResourcesCompat.getColor(resources, R.color.default_text_color, getTheme()));
+                rvOne.setCircleStatus(CircleView.FILLED);
+                rvTwo.setCircleStatus(CircleView.FILLED);
+                rvThree.setCircleStatus(CircleView.ACTIVE);
 
+                lineDivider1.setBackgroundColor(ContextCompat.getColor(this, R.color.list_divider_active));
+                lineDivider2.setBackgroundColor(ContextCompat.getColor(this, R.color.list_divider_active));
+
+                txtStep3Label.setTextColor(ResourcesCompat.getColor(resources, R.color.default_text_color, getTheme()));
                 break;
         }
     }

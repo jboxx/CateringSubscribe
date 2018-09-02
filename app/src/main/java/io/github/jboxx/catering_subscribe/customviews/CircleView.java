@@ -4,13 +4,29 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.ColorRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.util.AttributeSet;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 import io.github.jboxx.catering_subscribe.R;
 
 public class CircleView extends AbstractBaseView {
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({
+            ACTIVE,
+            UNACTIVE,
+            FILLED,
+    })
+
+    public @interface CircleViewConstant {}
+
+    public static final String ACTIVE = "ACTIVE";
+    public static final String UNACTIVE = "UNACTIVE";
+    public static final String FILLED = "FILLED";
 
     private int circleRadius = 18;
     private int strokeColor = 0xFFFD9714;
@@ -97,6 +113,24 @@ public class CircleView extends AbstractBaseView {
         p.setColor(fillColor);
         p.setStyle(Paint.Style.FILL);
         return p;
+    }
+
+    public  void setCircleStatus(@CircleViewConstant String status) {
+        switch (status) {
+            case ACTIVE:
+                this.strokeColor = 0xFFFD9714;
+                this.fillColor = 0X00FFFFFF;
+                break;
+            case UNACTIVE:
+                this.strokeColor = 0xFFE0E0E0;
+                this.fillColor = 0X00FFFFFF;
+                break;
+            case FILLED:
+                this.strokeColor = 0xFFFD9714;
+                this.fillColor = 0xFFFD9714;
+                break;
+        }
+        invalidate();
     }
 
     public void setCircleActive(boolean isActive) {

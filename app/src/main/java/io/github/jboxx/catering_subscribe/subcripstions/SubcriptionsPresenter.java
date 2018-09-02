@@ -284,7 +284,7 @@ public class SubcriptionsPresenter implements SubcriptionsContract.Presenter {
 
     private void selectDay(CalendarDay deletedCalendar) {
         if (!subcriptionTime.getParam().equals(SubcriptionTime.CUSTOM)
-                || numberOfDays <= customSubcriptionTime.getShouldSelectedDays()) {
+                || numberOfDays < customSubcriptionTime.getShouldSelectedDays()) {
 
             LocalDate localDate = sortedCalendarList().get(sortedCalendarList().size()-1);
 

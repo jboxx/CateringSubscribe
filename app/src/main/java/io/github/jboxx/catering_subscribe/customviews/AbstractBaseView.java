@@ -31,15 +31,12 @@ public abstract class AbstractBaseView extends View {
 
     private void logSpec(int specMode) {
         if (specMode == MeasureSpec.UNSPECIFIED) {
-            Log.d(TAG, "mode: unspecified");
             return;
         }
         if (specMode == MeasureSpec.AT_MOST) {
-            Log.d(TAG, "mode: at most");
             return;
         }
         if (specMode == MeasureSpec.EXACTLY) {
-            Log.d(TAG, "mode: exact");
             return;
         }
     }
@@ -51,31 +48,26 @@ public abstract class AbstractBaseView extends View {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        Log.d(TAG, "onLayout");
         super.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.d(TAG, "onDraw called");
     }
 
     @Override
     protected void onRestoreInstanceState(Parcelable p) {
-        Log.d(TAG, "onRestoreInstanceState");
         super.onRestoreInstanceState(p);
     }
 
     @Override
     protected Parcelable onSaveInstanceState() {
-        Log.d(TAG, "onSaveInstanceState");
         Parcelable p = super.onSaveInstanceState();
         return p;
     }
 
     private int getImprovedDefaultHeight(int measureSpec) {
-        // int result = size;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
         switch (specMode) {
@@ -90,7 +82,6 @@ public abstract class AbstractBaseView extends View {
     }
 
     private int getImprovedDefaultWidth(int measureSpec) {
-        // int result = size;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
         switch (specMode) {
