@@ -26,13 +26,13 @@
     <string name="should_select_more_dates">Anda kurang memilih hari. Pilih %1$s lagi!</string>
 
     <string-array name="custom_weekdays">
-        <item>MIN</item>
         <item>SEN</item>
         <item>SEL</item>
         <item>RAB</item>
         <item>KAM</item>
         <item>JUM</item>
         <item>SAB</item>
+        <item>MIN</item>
     </string-array>
 
     <string-array name="custom_months">

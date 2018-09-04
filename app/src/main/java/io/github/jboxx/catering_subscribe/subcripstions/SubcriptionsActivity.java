@@ -162,8 +162,8 @@ public class SubcriptionsActivity extends AppCompatActivity implements Subcripti
                 disableSaturdayAndMonday
         );
 
-        LocalDate minDate = LocalDate.now().withDayOfMonth(1);
-        LocalDate maxDate = LocalDate.now().plusMonths(6);
+        LocalDate minDate = LocalDate.now().plusDays(1);
+        LocalDate maxDate = LocalDate.now().plusMonths(3);
 
         calendarView.state().edit()
                 .setMinimumDate(minDate)
